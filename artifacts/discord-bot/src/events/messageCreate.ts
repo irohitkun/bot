@@ -3,10 +3,9 @@ import { readdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { PrefixCommand } from "../prefixCommands/index.js";
+import { getPrefix } from "../utils/prefixCache.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PREFIX = "%";
-
 const prefixCommands = new Map<string, PrefixCommand>();
 
 async function loadPrefixCommands() {
@@ -33,9 +32,11 @@ export const once = false;
 export async function execute(message: Message) {
   if (message.author.bot) return;
   if (!message.guild) return;
-  if (!message.content.startsWith(PREFIX)) return;
 
-  const args = message.content.slice(PREFIX.length).trim().split(/\s+/);
+  const prefix = await getPrefix(message.guild.id);
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/\s+/);
   const commandName = args.shift()?.toLowerCase();
   if (!commandName) return;
 
@@ -45,7 +46,7 @@ export async function execute(message: Message) {
   try {
     await command.execute(message, args);
   } catch (err) {
-    console.error(`Error in prefix command %${commandName}:`, err);
+    console.error(`Error in prefix command ${prefix}${commandName}:`, err);
     await message.reply("❌ An error occurred while running that command.").catch(() => {});
   }
 }
