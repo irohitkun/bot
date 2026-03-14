@@ -91,6 +91,18 @@ Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used b
 
 Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
 
+### `artifacts/discord-bot` (`@workspace/discord-bot`)
+
+Discord moderation bot using discord.js v14. Slash commands auto-register on startup.
+
+- Entry: `src/index.ts` — creates the Discord client, loads commands and events, logs in
+- Commands: `src/commands/` — one file per slash command
+- Events: `src/events/` — Discord event handlers
+- Utils: `src/utils/` — command/event loaders, slash command registration
+- Run: `pnpm --filter @workspace/discord-bot run dev`
+- Requires: `DISCORD_BOT_TOKEN` secret
+- Commands: `/ban`, `/kick`, `/mute`, `/unmute`, `/warn`, `/warnings`, `/clearwarn`, `/purge`, `/unban`, `/userinfo`, `/serverinfo`, `/slowmode`, `/lock`, `/unlock`
+
 ### `scripts` (`@workspace/scripts`)
 
 Utility scripts package. Each script is a `.ts` file in `src/` with a corresponding npm script in `package.json`. Run scripts via `pnpm --filter @workspace/scripts run <script>`. Scripts can import any workspace package (e.g., `@workspace/db`) by adding it as a dependency in `scripts/package.json`.
