@@ -24,11 +24,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const member = await guild.members.fetch(target.id).catch(() => null);
 
   if (!member) {
-    return interaction.reply({ content: "Could not find that member in the server.", ephemeral: true });
+    return interaction.reply({ content: "Could not find that member in the server.", flags: 64 });
   }
 
   if (!member.isCommunicationDisabled()) {
-    return interaction.reply({ content: "This user is not currently muted.", ephemeral: true });
+    return interaction.reply({ content: "This user is not currently muted.", flags: 64 });
   }
 
   await member.timeout(null, reason);

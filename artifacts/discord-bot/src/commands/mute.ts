@@ -38,27 +38,27 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const durationMs = parseDuration(durationInput);
   if (!durationMs) {
-    return interaction.reply({ content: "Invalid duration format. Use formats like `10m`, `1h`, `2d`.", ephemeral: true });
+    return interaction.reply({ content: "Invalid duration format. Use formats like `10m`, `1h`, `2d`.", flags: 64 });
   }
 
   const maxMs = 28 * 24 * 60 * 60 * 1000;
   if (durationMs > maxMs) {
-    return interaction.reply({ content: "Duration cannot exceed 28 days.", ephemeral: true });
+    return interaction.reply({ content: "Duration cannot exceed 28 days.", flags: 64 });
   }
 
   const guild = interaction.guild!;
   const member = await guild.members.fetch(target.id).catch(() => null);
 
   if (!member) {
-    return interaction.reply({ content: "Could not find that member in the server.", ephemeral: true });
+    return interaction.reply({ content: "Could not find that member in the server.", flags: 64 });
   }
 
   if (!member.moderatable) {
-    return interaction.reply({ content: "I cannot mute this user. They may have a higher role than me.", ephemeral: true });
+    return interaction.reply({ content: "I cannot mute this user. They may have a higher role than me.", flags: 64 });
   }
 
   if (member.id === interaction.user.id) {
-    return interaction.reply({ content: "You cannot mute yourself.", ephemeral: true });
+    return interaction.reply({ content: "You cannot mute yourself.", flags: 64 });
   }
 
   await member.timeout(durationMs, reason);

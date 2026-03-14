@@ -24,7 +24,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const ban = await guild.bans.fetch(userId).catch(() => null);
   if (!ban) {
-    return interaction.reply({ content: "This user is not banned or the ID is invalid.", ephemeral: true });
+    return interaction.reply({ content: "This user is not banned or the ID is invalid.", flags: 64 });
   }
 
   await guild.bans.remove(userId, reason);

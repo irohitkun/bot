@@ -28,7 +28,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const channel = interaction.channel as TextChannel;
 
-  await interaction.deferReply({ ephemeral: true });
+  await interaction.deferReply({ flags: 64 });
 
   const fetched = await channel.messages.fetch({ limit: amount });
   let toDelete = [...fetched.values()];

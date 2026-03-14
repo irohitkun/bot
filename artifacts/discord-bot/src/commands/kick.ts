@@ -24,15 +24,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const member = await guild.members.fetch(target.id).catch(() => null);
 
   if (!member) {
-    return interaction.reply({ content: "Could not find that member in the server.", ephemeral: true });
+    return interaction.reply({ content: "Could not find that member in the server.", flags: 64 });
   }
 
   if (!member.kickable) {
-    return interaction.reply({ content: "I cannot kick this user. They may have a higher role than me.", ephemeral: true });
+    return interaction.reply({ content: "I cannot kick this user. They may have a higher role than me.", flags: 64 });
   }
 
   if (member.id === interaction.user.id) {
-    return interaction.reply({ content: "You cannot kick yourself.", ephemeral: true });
+    return interaction.reply({ content: "You cannot kick yourself.", flags: 64 });
   }
 
   await member.kick(reason);
