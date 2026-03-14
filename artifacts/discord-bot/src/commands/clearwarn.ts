@@ -4,7 +4,8 @@ import {
   PermissionFlagsBits,
   EmbedBuilder,
 } from "discord.js";
-import { warnings } from "./warn.js";
+import { db, warningsTable } from "@workspace/db";
+import { eq, and, count } from "drizzle-orm";
 
 export const data = new SlashCommandBuilder()
   .setName("clearwarn")
@@ -18,9 +19,14 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const target = interaction.options.getUser("user", true);
   const guild = interaction.guild!;
 
-  const key = `${guild.id}:${target.id}`;
-  const prev = warnings.get(key)?.length ?? 0;
-  warnings.delete(key);
+  const [{ value: prev }] = await db
+    .select({ value: count() })
+    .from(warningsTable)
+    .where(and(eq(warningsTable.guildId, guild.id), eq(warningsTable.userId, target.id)));
+
+  await db
+    .delete(warningsTable)
+    .where(and(eq(warningsTable.guildId, guild.id), eq(warningsTable.userId, target.id)));
 
   const embed = new EmbedBuilder()
     .setColor(0x57f287)

@@ -206,12 +206,18 @@ importers:
       '@discordjs/rest':
         specifier: ^2.4.3
         version: 2.6.0
+      '@workspace/db':
+        specifier: workspace:*
+        version: link:../../lib/db
       discord-api-types:
         specifier: ^0.37.120
         version: 0.37.120
       discord.js:
         specifier: ^14.21.0
         version: 14.25.1
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.1(@types/pg@8.18.0)(pg@8.20.0)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

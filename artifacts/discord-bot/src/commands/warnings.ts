@@ -4,7 +4,8 @@ import {
   PermissionFlagsBits,
   EmbedBuilder,
 } from "discord.js";
-import { warnings } from "./warn.js";
+import { db, warningsTable } from "@workspace/db";
+import { eq, and, asc } from "drizzle-orm";
 
 export const data = new SlashCommandBuilder()
   .setName("warnings")
@@ -18,8 +19,11 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const target = interaction.options.getUser("user", true);
   const guild = interaction.guild!;
 
-  const key = `${guild.id}:${target.id}`;
-  const userWarnings = warnings.get(key) ?? [];
+  const userWarnings = await db
+    .select()
+    .from(warningsTable)
+    .where(and(eq(warningsTable.guildId, guild.id), eq(warningsTable.userId, target.id)))
+    .orderBy(asc(warningsTable.createdAt));
 
   const embed = new EmbedBuilder()
     .setColor(0x5865f2)
@@ -34,8 +38,8 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     for (let i = 0; i < userWarnings.length; i++) {
       const w = userWarnings[i];
       embed.addFields({
-        name: `#${i + 1} — ${w.timestamp.toLocaleDateString()}`,
-        value: `**Reason:** ${w.reason}\n**Moderator:** ${w.moderator}`,
+        name: `#${i + 1} — ${w.createdAt.toLocaleDateString()}`,
+        value: `**Reason:** ${w.reason}\n**Moderator:** ${w.moderatorTag}`,
       });
     }
   }
