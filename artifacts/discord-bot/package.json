@@ -12,7 +12,8 @@
     "@discordjs/rest": "^2.4.3",
     "discord-api-types": "^0.37.120",
     "@workspace/db": "workspace:*",
-    "drizzle-orm": "catalog:"
+    "drizzle-orm": "catalog:",
+    "openai": "^4.103.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
