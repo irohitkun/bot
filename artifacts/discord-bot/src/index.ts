@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits, Collection } from "discord.js";
+import { createServer, get as httpGet } from "http";
 import { loadCommands } from "./utils/loadCommands.js";
 import { loadEvents } from "./utils/loadEvents.js";
 
@@ -17,11 +18,39 @@ export const client = new Client({
 
 export const commands = new Collection<string, any>();
 
+function startKeepAliveServer() {
+  const port = parseInt(process.env.PORT ?? "3000", 10);
+
+  const server = createServer((req, res) => {
+    if (req.url === "/ping" || req.url === "/") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ status: "ok", bot: client.user?.tag ?? "starting", uptime: process.uptime() }));
+    } else {
+      res.writeHead(404);
+      res.end("Not found");
+    }
+  });
+
+  server.listen(port, () => {
+    console.log(`Keep-alive server running on port ${port}`);
+  });
+
+  setInterval(
+    () => {
+      const req = httpGet(`http://localhost:${port}/ping`, (res) => {
+        console.log(`[Keep-alive] Self-ping OK — status ${res.statusCode}`);
+      });
+      req.on("error", (err: Error) => console.warn("[Keep-alive] Self-ping failed:", err.message));
+    },
+    5 * 60 * 1000,
+  );
+}
+
 async function main() {
   await loadCommands(commands);
   await loadEvents(client);
-
   await client.login(process.env.DISCORD_BOT_TOKEN);
+  startKeepAliveServer();
 }
 
 main().catch((err) => {
