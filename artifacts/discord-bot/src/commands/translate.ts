@@ -77,7 +77,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     : `You are a professional translator. Detect the language of the following text and translate it to ${toLang}. Return only the translated text, nothing else.`;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-5-mini",
+    model: "gpt-4o-mini",
     max_completion_tokens: 1024,
     messages: [
       { role: "system", content: systemPrompt },
