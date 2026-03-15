@@ -31,11 +31,11 @@ const LANGUAGE_MAP: Record<string, string> = {
 
 export const command: PrefixCommand = {
   name: "translate",
-  usage: "%translate <language> <text>",
-  description: "Translate text into another language",
+  usage: "%translate <language> [text]",
+  description: "Translate text into another language. Reply to a message with %translate <language> to translate it.",
   async execute(message: Message, args: string[]) {
-    if (args.length < 2) {
-      return void message.reply(`Usage: \`${this.usage}\`\nExample: \`%translate spanish Hello world!\``);
+    if (args.length < 1) {
+      return void message.reply(`Usage: \`%translate <language> <text>\`\nOr reply to a message: \`%translate spanish\`\nExample: \`%translate spanish Hello world!\``);
     }
 
     const langInput = args[0].toLowerCase();
@@ -44,7 +44,20 @@ export const command: PrefixCommand = {
       return void message.reply(`❌ Unknown language \`${args[0]}\`. Try: english, spanish, french, german, japanese, korean, chinese, arabic, russian, etc.`);
     }
 
-    const text = args.slice(1).join(" ");
+    let text = args.slice(1).join(" ");
+
+    if (!text && message.reference?.messageId) {
+      const replied = await message.channel.messages.fetch(message.reference.messageId).catch(() => null);
+      if (!replied || !replied.content) {
+        return void message.reply("❌ Could not find text in the replied message to translate.");
+      }
+      text = replied.content;
+    }
+
+    if (!text) {
+      return void message.reply(`Usage: \`%translate <language> <text>\`\nOr reply to a message: \`%translate spanish\``);
+    }
+
     const typing = await message.channel.sendTyping().catch(() => {});
 
     const response = await openai.chat.completions.create({
