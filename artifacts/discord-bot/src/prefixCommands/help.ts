@@ -49,6 +49,10 @@ export const command: PrefixCommand = {
           name: "🌐 Translation",
           value: "`%translate <language> <text>` — Translate text\nExample: `%translate spanish Hello world`",
         },
+        {
+          name: "🔗 Other",
+          value: "`%invite` — Get the bot invite link\n`%setprefix <new>` — Change the prefix",
+        },
       )
       .setFooter({ text: "Prefix: %   |   All commands require appropriate permissions" })
       .setTimestamp();
