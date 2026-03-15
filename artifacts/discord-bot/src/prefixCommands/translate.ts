@@ -31,20 +31,21 @@ const LANGUAGE_MAP: Record<string, string> = {
 
 export const command: PrefixCommand = {
   name: "translate",
-  usage: "%translate <language> [text]",
-  description: "Translate text into another language. Reply to a message with %translate <language> to translate it.",
+  usage: "%translate [language] <text>  OR  reply to a message + %translate [language]",
+  description: "Translate text to English by default, or specify a language.",
   async execute(message: Message, args: string[]) {
-    if (args.length < 1) {
-      return void message.reply(`Usage: \`%translate <language> <text>\`\nOr reply to a message: \`%translate spanish\`\nExample: \`%translate spanish Hello world!\``);
-    }
+    let toLang = "English";
+    let text = "";
 
-    const langInput = args[0].toLowerCase();
-    const toLang = LANGUAGE_MAP[langInput];
-    if (!toLang) {
-      return void message.reply(`❌ Unknown language \`${args[0]}\`. Try: english, spanish, french, german, japanese, korean, chinese, arabic, russian, etc.`);
+    if (args.length > 0) {
+      const firstArgLower = args[0].toLowerCase();
+      if (LANGUAGE_MAP[firstArgLower]) {
+        toLang = LANGUAGE_MAP[firstArgLower];
+        text = args.slice(1).join(" ");
+      } else {
+        text = args.join(" ");
+      }
     }
-
-    let text = args.slice(1).join(" ");
 
     if (!text && message.reference?.messageId) {
       const replied = await message.channel.messages.fetch(message.reference.messageId).catch(() => null);
@@ -55,10 +56,12 @@ export const command: PrefixCommand = {
     }
 
     if (!text) {
-      return void message.reply(`Usage: \`%translate <language> <text>\`\nOr reply to a message: \`%translate spanish\``);
+      return void message.reply(
+        `Usage:\n\`%translate <text>\` — translate to English\n\`%translate <language> <text>\` — translate to a specific language\nOr reply to any message with \`%translate\` or \`%translate <language>\``
+      );
     }
 
-    const typing = await message.channel.sendTyping().catch(() => {});
+    await message.channel.sendTyping().catch(() => {});
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",

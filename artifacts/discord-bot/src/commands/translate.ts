@@ -39,15 +39,15 @@ const LANGUAGES: Record<string, string> = {
 
 export const data = new SlashCommandBuilder()
   .setName("translate")
-  .setDescription("Translate text into another language")
+  .setDescription("Translate text — defaults to English if no language is chosen")
   .addStringOption((opt) =>
     opt.setName("text").setDescription("The text to translate").setRequired(true)
   )
   .addStringOption((opt) =>
     opt
       .setName("to")
-      .setDescription("Target language")
-      .setRequired(true)
+      .setDescription("Target language (default: English)")
+      .setRequired(false)
       .addChoices(
         ...Object.entries(LANGUAGES).map(([value, name]) => ({ name, value }))
       )
@@ -64,10 +64,10 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: ChatInputCommandInteraction) {
   const text = interaction.options.getString("text", true);
-  const toKey = interaction.options.getString("to", true);
+  const toKey = interaction.options.getString("to") ?? "english";
   const fromKey = interaction.options.getString("from");
 
-  const toLang = LANGUAGES[toKey];
+  const toLang = LANGUAGES[toKey] ?? "English";
   const fromLang = fromKey ? LANGUAGES[fromKey] : null;
 
   await interaction.deferReply();
@@ -88,19 +88,19 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const translated = response.choices[0]?.message?.content?.trim();
 
   if (!translated) {
-    return interaction.editReply("Could not translate the text. Please try again.");
+    return interaction.editReply("❌ Could not translate the text. Please try again.");
   }
 
-  const detectedInfo = fromLang ? `**From:** ${fromLang}` : "**From:** Auto-detected";
+  const detectedInfo = fromLang ? `From: ${fromLang}` : "From: Auto-detected";
 
   const embed = new EmbedBuilder()
     .setColor(0x5865f2)
     .setTitle("🌐 Translation")
     .addFields(
       { name: "Original", value: text.length > 1024 ? text.slice(0, 1021) + "..." : text },
-      { name: "Translated", value: translated.length > 1024 ? translated.slice(0, 1021) + "..." : translated },
+      { name: `Translated to ${toLang}`, value: translated.length > 1024 ? translated.slice(0, 1021) + "..." : translated },
     )
-    .setFooter({ text: `${detectedInfo} → To: ${toLang} • Requested by ${interaction.user.tag}` })
+    .setFooter({ text: `${detectedInfo} → ${toLang} • Requested by ${interaction.user.tag}` })
     .setTimestamp();
 
   await interaction.editReply({ embeds: [embed] });
