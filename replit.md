@@ -96,12 +96,20 @@ Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHea
 Discord moderation bot using discord.js v14. Slash commands auto-register on startup.
 
 - Entry: `src/index.ts` — creates the Discord client, loads commands and events, logs in
-- Commands: `src/commands/` — one file per slash command
+- Commands: `src/commands/` — one file per slash command (17 total: ban, kick, mute, unmute, unban, warn, warnings, clearwarn, purge, slowmode, lock, unlock, userinfo, serverinfo, translate, setprefix, invite)
+- Prefix commands: `src/prefixCommands/` — mirrors all slash commands with `%` prefix (configurable per guild)
 - Events: `src/events/` — Discord event handlers
-- Utils: `src/utils/` — command/event loaders, slash command registration
+- Utils: `src/utils/` — command/event loaders, slash command registration, prefix cache
 - Run: `pnpm --filter @workspace/discord-bot run dev`
-- Requires: `DISCORD_BOT_TOKEN` secret
-- Commands: `/ban`, `/kick`, `/mute`, `/unmute`, `/warn`, `/warnings`, `/clearwarn`, `/purge`, `/unban`, `/userinfo`, `/serverinfo`, `/slowmode`, `/lock`, `/unlock`
+- Requires: `DISCORD_BOT_TOKEN` secret, `MESSAGE_CONTENT_INTENT_ENABLED=true`
+- AI translation powered by Replit OpenAI integration (`AI_INTEGRATIONS_OPENAI_BASE_URL`, `AI_INTEGRATIONS_OPENAI_API_KEY`)
+- Bot username: i<3tvgirl#5877, Client ID: 1482403011144843366
+
+## GitHub Backup
+
+Code is backed up to https://github.com/irohitkun/bot (branch: main).
+- Token stored in `GITHUB_PERSONAL_ACCESS_TOKEN` secret (no expiration)
+- **Push after every change session:** `git push "https://irohitkun:${GITHUB_PERSONAL_ACCESS_TOKEN}@github.com/irohitkun/bot.git" HEAD:main`
 
 ### `scripts` (`@workspace/scripts`)
 
