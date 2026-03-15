@@ -1,1 +1,1 @@
-import "./scripts/src/hello";
+import "./artifacts/discord-bot/src/index";
