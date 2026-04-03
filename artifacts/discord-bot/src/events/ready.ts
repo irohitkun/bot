@@ -1,6 +1,6 @@
 import { Client, Events, ActivityType } from "discord.js";
 import { registerSlashCommands } from "../utils/registerCommands.js";
-import { db, guildSettingsTable, warningsTable, premiumGuildsTable, automodSettingsTable, giveawaysTable, afkUsersTable } from "../db/index.js";
+import { db } from "../db/index.js";
 import { sql } from "drizzle-orm";
 
 export const name = Events.ClientReady;
@@ -72,6 +72,28 @@ async function ensureTables() {
       reason TEXT NOT NULL DEFAULT 'AFK',
       set_at TIMESTAMP NOT NULL DEFAULT NOW(),
       PRIMARY KEY (user_id, guild_id)
+    )
+  `);
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS server_customization (
+      guild_id TEXT PRIMARY KEY,
+      embed_color TEXT NOT NULL DEFAULT '5865f2',
+      footer_text TEXT,
+      welcome_channel_id TEXT,
+      welcome_message TEXT,
+      log_channel_id TEXT,
+      updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    )
+  `);
+  await db.execute(sql`
+    CREATE TABLE IF NOT EXISTS reminders (
+      id SERIAL PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      channel_id TEXT NOT NULL,
+      message TEXT NOT NULL,
+      remind_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      sent BOOLEAN NOT NULL DEFAULT FALSE
     )
   `);
 }

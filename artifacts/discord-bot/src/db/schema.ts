@@ -66,3 +66,23 @@ export const afkUsersTable = pgTable("afk_users", {
   reason: text("reason").notNull().default("AFK"),
   setAt: timestamp("set_at").notNull().defaultNow(),
 });
+
+export const serverCustomizationTable = pgTable("server_customization", {
+  guildId: text("guild_id").primaryKey(),
+  embedColor: text("embed_color").notNull().default("5865f2"),
+  footerText: text("footer_text"),
+  welcomeChannelId: text("welcome_channel_id"),
+  welcomeMessage: text("welcome_message"),
+  logChannelId: text("log_channel_id"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const remindersTable = pgTable("reminders", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  channelId: text("channel_id").notNull(),
+  message: text("message").notNull(),
+  remindAt: timestamp("remind_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  sent: boolean("sent").notNull().default(false),
+});

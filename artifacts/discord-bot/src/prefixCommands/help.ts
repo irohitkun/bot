@@ -2,6 +2,7 @@ import { Message, EmbedBuilder } from "discord.js";
 import { PrefixCommand } from "./index.js";
 import { getPrefix } from "../utils/prefixCache.js";
 import { isPremiumGuild } from "../utils/permissions.js";
+import { getGuildStyle } from "../utils/guildStyle.js";
 
 export const command: PrefixCommand = {
   name: "help",
@@ -10,23 +11,30 @@ export const command: PrefixCommand = {
   async execute(message: Message) {
     const prefix = await getPrefix(message.guild!.id);
     const premium = await isPremiumGuild(message.guild!.id);
+    const style = await getGuildStyle(message.guild!.id);
     const p = prefix;
 
-    const embed = new EmbedBuilder().setColor(0x5865f2).setTitle("🤖 Bot Commands")
+    const embed = new EmbedBuilder().setColor(style.color)
+      .setTitle("🤖 Bot Commands")
       .setDescription(`Prefix: \`${p}\` — All commands also work as slash commands (\`/command\`)`)
       .addFields(
-        { name: "🔨 Moderation", value: [`\`${p}ban @user [reason]\` — Ban`, `\`${p}kick @user [reason]\` — Kick`, `\`${p}mute @user <10m/1h> [reason]\` — Timeout`, `\`${p}unmute @user\` — Remove timeout`, `\`${p}unban <user_id>\` — Unban`].join("\n") },
-        { name: "⚠️ Warnings", value: [`\`${p}warn @user <reason>\` — Warn`, `\`${p}warnings @user\` — View warnings`, `\`${p}clearwarn @user\` — Clear warnings`].join("\n") },
-        { name: "🗑️ Channel", value: [`\`${p}purge <1-100> [@user]\` — Bulk delete`, `\`${p}slowmode <seconds>\` — Set slowmode`, `\`${p}lock [reason]\` — Lock channel`, `\`${p}unlock\` — Unlock channel`].join("\n") },
-        { name: "🏷️ Roles", value: [`\`${p}role add @user @role\` — Add role`, `\`${p}role remove @user @role\` — Remove role`, `\`${p}role info @role\` — Role info`].join("\n") },
-        { name: "🎉 Giveaways", value: [`\`${p}giveaway start <prize> <duration> [winners]\` — Start`, `\`${p}giveaway end <message_id>\` — End early`, `\`${p}giveaway reroll <message_id>\` — Reroll`].join("\n") },
-        { name: "💤 AFK", value: [`\`${p}afk [reason]\` — Set AFK`, `\`${p}afkremove\` — Remove AFK`].join("\n") },
-        { name: "🖼️ User", value: [`\`${p}avatar [@user]\` — Avatar`, `\`${p}banner [@user]\` — Banner`, `\`${p}userinfo [@user]\` — User info`, `\`${p}serverinfo\` — Server info`, `\`${p}ping\` — Latency`, `\`${p}snipe\` — Last deleted message`].join("\n") },
-        { name: "🌐 Translation", value: `\`${p}translate [lang] <text>\` — Translate (default: English)` },
-        { name: "⚙️ Config", value: [`\`${p}setprefix <prefix>\` — Change prefix`, `\`${p}invite\` — Bot invite link`].join("\n") },
-        ...(premium ? [{ name: "⭐ Premium Features", value: ["✅ Automod (`/automod`)", "✅ No-Prefix Mode (`/noprefix`)"].join("\n") }] : [{ name: "⭐ Premium Features", value: "Contact us to unlock: Automod, No-Prefix Mode, and more!" }])
+        { name: "🔨 Moderation", value: [`\`${p}ban\``, `\`${p}kick\``, `\`${p}mute\``, `\`${p}unmute\``, `\`${p}unban\``, `\`${p}warn\``, `\`${p}warnings\``, `\`${p}clearwarn\``].join(" • ") },
+        { name: "🗑️ Channel", value: [`\`${p}purge\``, `\`${p}slowmode\``, `\`${p}lock\``, `\`${p}unlock\``].join(" • ") },
+        { name: "🏷️ Roles", value: [`\`${p}role add\``, `\`${p}role remove\``, `\`${p}role info\``].join(" • ") },
+        { name: "🎉 Giveaways", value: [`\`${p}giveaway start\``, `\`${p}giveaway end\``, `\`${p}giveaway reroll\``].join(" • ") },
+        { name: "💤 AFK", value: [`\`${p}afk [reason]\``, `\`${p}afkremove\``].join(" • ") },
+        { name: "🎲 Fun", value: [`\`${p}8ball\``, `\`${p}coinflip\``, `\`${p}dice\``, `\`${p}poll\``, `\`${p}math\``].join(" • ") },
+        { name: "🖼️ User", value: [`\`${p}avatar\``, `\`${p}banner\``, `\`${p}userinfo\``, `\`${p}serverinfo\``, `\`${p}ping\``, `\`${p}snipe\``, `\`${p}botinfo\``, `\`${p}color\``].join(" • ") },
+        { name: "⏰ Tools", value: [`\`${p}remind\``, `\`${p}translate\``].join(" • ") },
+        { name: "⚙️ Config", value: [`\`${p}setprefix\``, `\`${p}invite\``].join(" • ") },
+        ...(premium ? [
+          { name: "⭐ Premium — Customization", value: [`\`/customize color\``, `\`/customize footer\``, `\`/customize nickname\``, `\`/customize preview\``].join(" • ") },
+          { name: "⭐ Premium — Features", value: [`\`/automod\``, `\`/noprefix\``, `\`/embed\``, `\`/welcome\``, `\`/logs\``].join(" • ") },
+        ] : [
+          { name: "⭐ Premium Features (Locked)", value: "Unlock: Custom embed colors, bot nickname & footer, automod, no-prefix mode, custom welcome messages, mod logs, custom embeds.\nContact us to activate Premium!" }
+        ])
       )
-      .setFooter({ text: `Use /help for more info | ${premium ? "⭐ Premium Server" : "Free Tier"}` })
+      .setFooter({ text: style.footer ?? `${premium ? "⭐ Premium Server" : "Free Tier"} • Use /help for slash commands` })
       .setTimestamp();
 
     await message.reply({ embeds: [embed] });
