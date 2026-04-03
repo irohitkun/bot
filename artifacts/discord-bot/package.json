@@ -1,0 +1,25 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts",
+    "dev": "tsx index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "@discordjs/rest": "^2.4.3",
+    "discord-api-types": "^0.37.120",
+    "drizzle-orm": "^0.41.0",
+    "openai": "^4.103.0",
+    "tsx": "^4.19.3",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.3",
+    "@types/pg": "^8.11.10",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,5 +1,29 @@
 # Workspace
 
+## Discord Bot (`artifacts/discord-bot/`)
+
+A fully-featured Discord bot with moderation, giveaways, automod, AFK, snipe, and a paid-tier system.
+
+### Startup
+- **Startup file:** `index.ts` (8 chars — satisfies 16-char host limit)
+- **Working directory:** `artifacts/discord-bot`
+- **Start command:** `tsx index.ts`
+
+### Required env vars
+- `DISCORD_BOT_TOKEN` — bot token
+- `DATABASE_URL` — PostgreSQL connection
+- `BOT_OWNERS` — comma-separated owner/helper user IDs
+- `OPENAI_API_KEY` — for translate command (optional)
+
+### Feature tiers
+- **Free:** Full moderation, role management, giveaways, AFK, avatar/banner, snipe, ping, translate
+- **Premium (bot-owner activated):** Automod, No-Prefix Mode
+- **Bot Owner only:** `/premium` commands (activate/deactivate/list)
+
+---
+
+
+
 ## Overview
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
