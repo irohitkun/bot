@@ -1,6 +1,6 @@
 import { Message, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import { PrefixCommand, parseMention } from "./index.js";
-import { db, warningsTable } from "@workspace/db";
+import { db, warningsTable } from "../db/index.js";
 import { eq, and, count } from "drizzle-orm";
 
 export const command: PrefixCommand = {

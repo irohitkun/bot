@@ -4,7 +4,7 @@ import {
   PermissionFlagsBits,
   EmbedBuilder,
 } from "discord.js";
-import { db, warningsTable } from "@workspace/db";
+import { db, warningsTable } from "../db/index.js";
 import { eq, and, asc } from "drizzle-orm";
 
 export const data = new SlashCommandBuilder()
