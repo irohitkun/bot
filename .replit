@@ -53,3 +53,4 @@ channel = "stable-25_05"
 [userenv.shared]
 MESSAGE_CONTENT_INTENT_ENABLED = "true"
 BOT_OWNERS = "1298631508533313536"
+repo = "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"
