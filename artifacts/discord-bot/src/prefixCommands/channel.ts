@@ -14,7 +14,7 @@ export const command: PrefixCommand = {
     if (!sub) return void message.reply(`Usage: \`${this.usage}\``);
 
     if (sub === "rename") {
-      const newName = args[1];
+      const newName = args.slice(1).join(" ").trim();
       if (!newName) return void message.reply("Usage: `%channel rename <new-name>`");
       const ch = message.channel as GuildChannel;
       const oldName = ch.name;
@@ -60,12 +60,13 @@ export const command: PrefixCommand = {
     }
 
     if (sub === "create") {
-      const name = args[1];
+      const typeStr = (["text", "voice"].includes(args[args.length - 1]?.toLowerCase())) ? args[args.length - 1].toLowerCase() : "text";
+      const nameEnd = (["text", "voice"].includes(args[args.length - 1]?.toLowerCase())) ? args.length - 1 : args.length;
+      const name = args.slice(1, nameEnd).join(" ").trim();
       if (!name) return void message.reply("Usage: `%channel create <name> [text|voice]`");
-      const typeStr = args[2]?.toLowerCase() ?? "text";
       const channelType = typeStr === "voice" ? ChannelType.GuildVoice : ChannelType.GuildText;
       const created = await message.guild!.channels.create({ name, type: channelType, reason: `Created by ${message.author.tag}` });
-      return void message.reply(`✅ Created <#${created.id}>.`);
+      return void message.reply(`✅ Created <#${created.id}> (${typeStr}).`);
     }
 
     if (sub === "delete") {
